@@ -33,7 +33,7 @@ function App() {
 
   const addMatchHistory = ({ winner, loser, type, chain, bonus, comment }) => {
     createHistory(players, history, setHistory, winner, loser, type, chain, bonus, comment);
-    updatePlayersAfterMatch(players, setPlayers, winner, loser, chain, bonus);
+    updatePlayersAfterMatch(players, setPlayers, winner, loser, type, chain, bonus);
   };
 
   return (

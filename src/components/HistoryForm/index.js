@@ -23,6 +23,7 @@ function HistoryForm({ submitHandler }) {
   const [loser, setLoser] = useState(null);
   const [chain, setChain] = useState(0);
   const [bonus, setBonus] = useState(0);
+  const [type, setType] = useState('Bo1');
   const playersContext = useContext(PlayersContext);
   const [form] = Form.useForm();
 
@@ -33,6 +34,7 @@ function HistoryForm({ submitHandler }) {
     setLoser(null);
     setChain(0);
     setBonus(0);
+    setType('Bo1');
   };
 
   const selectPlayerHanler = (item, id) => {
@@ -79,6 +81,7 @@ function HistoryForm({ submitHandler }) {
               selectPlayerHanler={id => selectPlayerHanler('winner', id)}
             />
             <Point
+              type={type}
               win
               streak={winner?.streak}
               rankDiff={winner && loser ? loser.level - winner.level : null}
@@ -103,7 +106,7 @@ function HistoryForm({ submitHandler }) {
               players={playersData}
               selectPlayerHanler={id => selectPlayerHanler('loser', id)}
             />
-            <Point rankDiff={winner && loser ? loser.level - winner.level : null} />
+            <Point type={type} rankDiff={winner && loser ? loser.level - winner.level : null} />
           </div>
         </Form.Item>
       </Form.Item>
@@ -112,7 +115,7 @@ function HistoryForm({ submitHandler }) {
         name="type"
         rules={[{ required: true, message: 'Game type is required' }]}
       >
-        <Radio.Group>
+        <Radio.Group onChange={e => setType(e.target.value)}>
           <Radio value="Bo1">Bo1</Radio>
           <Radio value="Bo3">Bo3</Radio>
         </Radio.Group>

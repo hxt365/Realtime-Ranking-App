@@ -16,6 +16,18 @@ const calcLevel = point => {
   return RANK_POINTS.filter(p => p <= point).length - 1;
 };
 
+const calcPlusPoint = (type, rankDiff, chain, bonus, streak) => {
+  let plus = 5 + rankDiff + chain + bonus + 5 * streak;
+  if (type === 'Bo3') plus = 15 + rankDiff + chain + bonus;
+  return plus;
+};
+
+const calcMinusPoint = (type, rankDiff) => {
+  let minus = -2.5 - rankDiff;
+  if (type === 'Bo3') minus = -7.5 - rankDiff;
+  return minus;
+};
+
 const addPlayer = (players, setPlayers, name) => {
   const newPlayers = [...players];
   newPlayers.push(newPlayer(newPlayers.length, name));
@@ -30,16 +42,22 @@ const addPointForPlayer = (players, setPlayers, id, point) => {
   setPlayers(newPlayers);
 };
 
-const updatePlayersAfterMatch = (players, setPlayers, winner, loser, chain, bonus) => {
+const updatePlayersAfterMatch = (players, setPlayers, winner, loser, type, chain, bonus) => {
+  const streak = players[winner].streak === 3;
   let rankDiff = players[loser].level - players[winner].level;
   if (rankDiff < 0) rankDiff = 0;
   const newPlayers = [...players];
+
   newPlayers[winner].streak += 1;
-  newPlayers[winner].point += 5 + rankDiff + chain + bonus + 5 * (players[winner].streak === 3);
   if (newPlayers[winner].streak === 3) newPlayers[winner].streak = 0;
+  newPlayers[winner].point += calcPlusPoint(type, rankDiff, chain, bonus, streak);
   newPlayers[winner].level = calcLevel(newPlayers[winner].point);
+
   newPlayers[loser].streak = 0;
+  newPlayers[loser].point += calcMinusPoint(type, rankDiff);
+  if (newPlayers[loser].point < 0) newPlayers[loser].point = 0;
   newPlayers[loser].level = calcLevel(newPlayers[loser].point);
+
   setPlayers(newPlayers);
 };
 

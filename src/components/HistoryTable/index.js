@@ -138,7 +138,8 @@ function HistoryTable() {
       key: 'plus',
       width: '5%',
       render: record => {
-        const res = 5 + record.chain + record.bonus + record.rankDiff + 5 * record.streak;
+        let res = 5 + record.chain + record.bonus + record.rankDiff + 5 * record.streak;
+        if (record.type === 'Bo3') res = 15 + record.chain + record.bonus + record.rankDiff;
         return res;
       },
     },
@@ -154,7 +155,8 @@ function HistoryTable() {
       key: 'minus',
       width: '5%',
       render: record => {
-        const res = -2.5 - record.rankDiff;
+        let res = -2.5 - record.rankDiff;
+        if (record.type === 'Bo3') res = -7.5 - record.rankDiff;
         return res;
       },
     },
