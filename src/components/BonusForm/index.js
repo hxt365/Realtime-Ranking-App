@@ -15,16 +15,19 @@ const btnLayout = {
   wrapperCol: { offset: 11 },
 };
 
-function BonusForm({ player, submitHandler }) {
+function BonusForm({ playerName, submitHandler }) {
+  const [form] = Form.useForm();
+
   const onFinish = values => {
     submitHandler(values);
+    form.resetFields();
   };
   return (
-    <Form name="bonus-form" {...layout} onFinish={onFinish}>
+    <Form name="bonus-form" {...layout} onFinish={onFinish} form={form}>
       <Form.Item {...tailLayout}>
         <span className="bonus-form__intro">
           Bonus for&nbsp;
-          <em>{player?.name}</em>
+          <em>{playerName}</em>
           &nbsp;!
         </span>
       </Form.Item>

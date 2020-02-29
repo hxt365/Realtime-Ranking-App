@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Form, Button, Input, InputNumber, Radio, Tooltip } from 'antd';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StarFilled } from '@ant-design/icons';
 import PlayerSelect from 'components/share/PlayerSelect';
 import 'components/HistoryForm/HistoryForm.scss';
 import { playersData } from 'services/mock-data';
+import { PlayersContext } from 'services/context';
+import { RANK } from 'constants/player';
+import Point from 'components/share/Point';
 
 const layout = {
   labelCol: { span: 6 },
@@ -16,18 +19,34 @@ const tailLayout = {
 };
 
 function HistoryForm({ submitHandler }) {
+  const [winner, setWinner] = useState(null);
+  const [loser, setLoser] = useState(null);
+  const [chain, setChain] = useState(0);
+  const [bonus, setBonus] = useState(0);
+  const playersContext = useContext(PlayersContext);
   const [form] = Form.useForm();
 
   const onFinish = values => {
     submitHandler(values);
+    form.resetFields();
+    setWinner(null);
+    setLoser(null);
+    setChain(0);
+    setBonus(0);
   };
 
-  const selectPlayerHanler = (item, name) => {
+  const selectPlayerHanler = (item, id) => {
     const newFieldsValue = {};
-    newFieldsValue[item] = name;
+    newFieldsValue[item] = id;
     form.setFieldsValue({
       ...newFieldsValue,
     });
+    if (item === 'winner')
+      setWinner({
+        level: playersContext.players[id].level,
+        streak: playersContext.players[id].streak === 2,
+      });
+    else if (item === 'loser') setLoser({ level: playersContext.players[id].level });
   };
 
   return (
@@ -49,15 +68,23 @@ function HistoryForm({ submitHandler }) {
           rules={[{ required: true, message: 'Winner is required' }]}
         >
           <div className="wrapper">
-            <span className="rank">Winner</span>
-            <Tooltip placement="top" title="Winstreak">
-              <StarFilled style={{ fontSize: '1.5rem', marginLeft: '.5rem', color: '#FFBE00' }} />
-            </Tooltip>
+            <span className="rank">{winner ? RANK[winner.level] : 'Winner'}</span>
+            {winner?.streak && (
+              <Tooltip placement="top" title="Winstreak">
+                <StarFilled style={{ fontSize: '1.5rem', marginLeft: '.5rem', color: '#FFBE00' }} />
+              </Tooltip>
+            )}
             <PlayerSelect
               players={playersData}
-              selectPlayerHanler={name => selectPlayerHanler('winner', name)}
+              selectPlayerHanler={id => selectPlayerHanler('winner', id)}
             />
-            <span className="point">+5</span>
+            <Point
+              win
+              streak={winner?.streak}
+              rankDiff={winner && loser ? loser.level - winner.level : null}
+              chain={chain}
+              bonus={bonus}
+            />
           </div>
         </Form.Item>
         <Form.Item
@@ -71,12 +98,12 @@ function HistoryForm({ submitHandler }) {
           rules={[{ required: true, message: 'Loser is required' }]}
         >
           <div className="wrapper">
-            <span className="rank">Loser</span>
+            <span className="rank">{loser ? RANK[loser.level] : 'Loser'}</span>
             <PlayerSelect
               players={playersData}
-              selectPlayerHanler={name => selectPlayerHanler('loser', name)}
+              selectPlayerHanler={id => selectPlayerHanler('loser', id)}
             />
-            <span className="point">-2.5</span>
+            <Point rankDiff={winner && loser ? loser.level - winner.level : null} />
           </div>
         </Form.Item>
       </Form.Item>
@@ -95,14 +122,14 @@ function HistoryForm({ submitHandler }) {
         name="chain"
         rules={[{ required: true, message: 'Chain point is required' }]}
       >
-        <InputNumber min={0} />
+        <InputNumber min={0} onChange={value => setChain(value)} />
       </Form.Item>
       <Form.Item
         label="Bonus"
         name="bonus"
-        rules={[{ required: true, message: 'Chain point is required' }]}
+        rules={[{ required: true, message: 'Bonus point is required' }]}
       >
-        <InputNumber />
+        <InputNumber onChange={value => setBonus(value)} />
       </Form.Item>
       <Form.Item label="Comment" name="comment">
         <Input />

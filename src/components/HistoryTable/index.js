@@ -10,7 +10,7 @@ function HistoryTable() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-  const historyData = useContext(HistoryContext);
+  const historyContext = useContext(HistoryContext);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -138,7 +138,7 @@ function HistoryTable() {
       key: 'plus',
       width: '5%',
       render: record => {
-        const res = 5 + record.chain + record.bonus + record.rank_diff + 5 * record.streak;
+        const res = 5 + record.chain + record.bonus + record.rankDiff + 5 * record.streak;
         return res;
       },
     },
@@ -154,27 +154,38 @@ function HistoryTable() {
       key: 'minus',
       width: '5%',
       render: record => {
-        const res = -2.5 - record.rank_diff;
+        const res = -2.5 - record.rankDiff;
         return res;
       },
     },
     {
       title: 'Rank difference',
-      dataIndex: 'rank_diff',
-      key: 'rank_diff',
+      dataIndex: 'rankDiff',
+      key: 'rankDiff',
+      width: '5%',
+    },
+    {
+      title: 'Bonus point',
+      dataIndex: 'bonus',
+      key: 'bonus',
       width: '5%',
     },
     {
       title: 'Comment',
       dataIndex: 'comment',
       key: 'comment',
-      width: '15%',
+      width: '10%',
     },
   ];
 
+  let data = null;
+  if (historyContext.history) {
+    data = [...historyContext.history];
+    data.sort((a, b) => b.datetime - a.datetime);
+  }
   return (
     <div className="history-table">
-      <Table columns={columns} dataSource={historyData} pagination={false} bordered />
+      <Table columns={columns} dataSource={data} pagination={false} bordered />
     </div>
   );
 }

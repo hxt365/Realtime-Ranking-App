@@ -7,6 +7,9 @@ import EventBonus from 'views/EventBonus';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { playersData, historyData, eventBonusData } from 'services/mock-data';
 import { PlayersContext, HistoryContext, EventBonusContext } from 'services/context';
+import { addPlayer, addPointForPlayer, updatePlayersAfterMatch } from 'services/players';
+import { createEventBonus } from 'services/eventBonus';
+import { createHistory } from 'services/history';
 
 function App() {
   const [players, setPlayers] = useState(null);
@@ -19,11 +22,25 @@ function App() {
     setEventBonus(eventBonusData);
   }, []);
 
+  const addNewPlayer = name => {
+    addPlayer(players, setPlayers, name);
+  };
+
+  const addBonusForPlayer = (id, bonus, comment) => {
+    addPointForPlayer(players, setPlayers, id, bonus);
+    createEventBonus(players, eventBonus, setEventBonus, id, bonus, comment);
+  };
+
+  const addMatchHistory = ({ winner, loser, type, chain, bonus, comment }) => {
+    createHistory(players, history, setHistory, winner, loser, type, chain, bonus, comment);
+    updatePlayersAfterMatch(players, setPlayers, winner, loser, chain, bonus);
+  };
+
   return (
     <div className="App">
-      <PlayersContext.Provider value={players}>
-        <HistoryContext.Provider value={history}>
-          <EventBonusContext.Provider value={eventBonus}>
+      <PlayersContext.Provider value={{ players, addNewPlayer }}>
+        <HistoryContext.Provider value={{ history, addMatchHistory }}>
+          <EventBonusContext.Provider value={{ eventBonus, addBonusForPlayer }}>
             <Layout>
               <Switch>
                 <Route path="/ranking" exact>

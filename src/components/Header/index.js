@@ -13,7 +13,7 @@ function LayoutHeader() {
       <Row justify="space-between">
         <div className="logo">
           <img src={logo} alt="logo" />
-          <span>Keyforge Hanoi</span>
+          <span>KEYFORGE HÀ NỘI RANKING</span>
         </div>
         <Row justify="end">
           <Menu

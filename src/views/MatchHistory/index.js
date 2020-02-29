@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import HistoryTable from 'components/HistoryTable';
 import { Affix, Button, Tooltip, Modal } from 'antd';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { EditOutlined } from '@ant-design/icons';
 import HistoryForm from 'components/HistoryForm';
 import 'views/MatchHistory/MatchHistory.scss';
+import { HistoryContext } from 'services/context';
 
 function MatchHistory() {
   const [openingModal, setOpeningModal] = useState(false);
+  const historyContext = useContext(HistoryContext);
 
   const toggleOpeningModalHandler = () => {
     setOpeningModal(c => !c);
   };
 
   const historySubmitHandler = values => {
-    console.log('Submit history', values);
+    historyContext.addMatchHistory(values);
     setOpeningModal(false);
   };
 

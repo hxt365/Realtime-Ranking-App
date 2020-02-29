@@ -15,7 +15,7 @@ function PlayerSelect({ players, selectPlayerHanler }) {
       }}
     >
       {players.map(player => (
-        <Option key={player.name} value={player.name}>
+        <Option key={player.key} value={player.key}>
           {player.name}
         </Option>
       ))}

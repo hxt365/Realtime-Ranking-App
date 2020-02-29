@@ -2,17 +2,28 @@ import { Table, Input, Button } from 'antd';
 import Highlighter from 'react-highlight-words';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import { PlayersContext } from 'services/context';
 import 'components/RankTable/RankTable.scss';
-
-const RANK = ['Common', 'Uncommon', 'Rare', 'Special', 'Maverick', 'Legacy', 'Anomaly'];
+import { RANK } from 'constants/player';
 
 function RankTable({ selectToAddBonusHandler }) {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [players, setPlayers] = useState(null);
   const searchInput = useRef(null);
   const playersData = useContext(PlayersContext);
+
+  useEffect(() => {
+    if (!playersData.players) return;
+    const playersList = [...playersData.players];
+    playersList.sort((a, b) => b.point - a.point);
+    setPlayers(
+      playersList.map((player, id) => {
+        return { ...player, order: id + 1 };
+      }),
+    );
+  }, [playersData.players]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -155,7 +166,7 @@ function RankTable({ selectToAddBonusHandler }) {
 
   return (
     <div className="rank-table">
-      <Table columns={columns} dataSource={playersData} pagination={false} bordered />
+      <Table columns={columns} dataSource={players} pagination={false} bordered />
     </div>
   );
 }

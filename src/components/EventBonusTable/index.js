@@ -10,7 +10,7 @@ function EventBonusTable() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
-  const eventBonusData = useContext(EventBonusContext);
+  const eventBonusContext = useContext(EventBonusContext);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -105,9 +105,14 @@ function EventBonusTable() {
     },
   ];
 
+  let data = null;
+  if (eventBonusContext.eventBonus) {
+    data = [...eventBonusContext.eventBonus];
+    data.sort((a, b) => b.datetime - a.datetime);
+  }
   return (
     <div className="history-table">
-      <Table columns={columns} dataSource={eventBonusData} pagination={false} bordered />
+      <Table columns={columns} dataSource={data} pagination={false} bordered />
     </div>
   );
 }

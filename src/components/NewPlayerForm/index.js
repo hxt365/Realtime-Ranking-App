@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Form, Input, Button } from 'antd';
 import 'components/NewPlayerForm/NewPlayerForm.scss';
+import { PlayersContext } from 'services/context';
 
 const layout = {
   labelCol: { span: 6 },
@@ -13,15 +14,18 @@ const btnLayout = {
 
 function NewPlayerForm({ newPlayerSubmitHanler }) {
   const [username, setUsername] = useState({ value: '' });
+  const playersContext = useContext(PlayersContext);
+  const [form] = Form.useForm();
 
   const onFinish = values => {
     newPlayerSubmitHanler(values);
+    form.resetFields();
   };
 
-  const validateUsername = value => {
-    console.log(value);
-    return true;
-    // return false;
+  const validateUsername = name => {
+    const { players } = playersContext;
+    const id = players.findIndex(player => player.name === name);
+    return id === -1;
   };
 
   const onChangeUsernameHandler = e => {
@@ -33,7 +37,7 @@ function NewPlayerForm({ newPlayerSubmitHanler }) {
   };
 
   return (
-    <Form name="new-player-form" {...layout} onFinish={onFinish}>
+    <Form name="new-player-form" {...layout} onFinish={onFinish} form={form}>
       <Form.Item
         label="Username"
         name="name"
