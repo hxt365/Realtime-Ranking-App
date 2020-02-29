@@ -1,0 +1,17 @@
+.header {
+  color: white;
+  font-size: 1.6rem;
+  height: 6.4rem;
+
+  &__menu {
+    line-height: 6.4rem;
+  }
+}
+
+.logo {
+  img {
+    height: 5rem;
+    width: 5rem;
+    margin-right: 1rem;
+  }
+}

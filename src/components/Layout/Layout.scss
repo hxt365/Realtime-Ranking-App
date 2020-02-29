@@ -1,0 +1,14 @@
+.layout {
+  height: 100%;
+
+  &__content {
+    width: 80%;
+    margin-left: 10%;
+    text-align: center;
+    min-height: calc(100% - 6.4rem - 7rem);
+  }
+
+  &__footer {
+    text-align: center;
+  }
+}

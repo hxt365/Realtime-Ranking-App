@@ -1,0 +1,18 @@
+.rank-table {
+  table {
+    text-align: center;
+
+    .ant-table-cell {
+      text-align: center;
+    }
+
+    .ant-table-filter-column-title {
+      text-align: center;
+    }
+
+    td:nth-child(2) {
+      text-align: left;
+      padding-left: 3rem;
+    }
+  }
+}
