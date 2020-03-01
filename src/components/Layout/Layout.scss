@@ -16,4 +16,28 @@
   &__footer {
     text-align: center;
   }
+
+  &__background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../../assets/pictures/logo.png');
+    background-color: rgba(black, 0.2);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%;
+    opacity: 0.2;
+    z-index: -1;
+    background-blend-mode: darken;
+
+    &_left {
+      transform: translateX(-50%);
+    }
+
+    &_right {
+      transform: translateX(50%);
+    }
+  }
 }

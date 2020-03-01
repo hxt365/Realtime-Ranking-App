@@ -11,6 +11,8 @@ function AppLayout({ children }) {
       <Header />
       <Content className="layout__content">{children}</Content>
       <Footer className="layout__footer">Copyright © 2020 Keyforge Hanoi</Footer>
+      <div className="layout__background layout__background_left" />
+      <div className="layout__background layout__background_right" />
     </div>
   );
 }
