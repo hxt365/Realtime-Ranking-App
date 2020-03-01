@@ -7,7 +7,7 @@ const newMatch = (winner, loser, type, chain, bonus, comment) => {
   return {
     datetime: moment().format('YYYY-MM-DD H:m:s'),
     winner: winner.name,
-    loser: winner.name,
+    loser: loser.name,
     type,
     streak: winner.streak === 2,
     chain,

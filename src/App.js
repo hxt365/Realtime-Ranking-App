@@ -110,7 +110,7 @@ function App() {
 
   const createHistory = async (winnerId, loserId, type, chain, bonus, comment) => {
     const newHistory = [...history];
-
+    
     openNotification('pending', 'Adding history...');
     const match = await createHistoryFromFirebase(
       newMatch(players[winnerId], players[loserId], type, chain, bonus, comment),
