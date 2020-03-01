@@ -4,7 +4,6 @@ import { Form, Button, Input, InputNumber, Radio, Tooltip } from 'antd';
 import { StarFilled } from '@ant-design/icons';
 import PlayerSelect from 'components/share/PlayerSelect';
 import 'components/HistoryForm/HistoryForm.scss';
-import { playersData } from 'services/mock-data';
 import { PlayersContext } from 'services/context';
 import { RANK } from 'constants/player';
 import Point from 'components/share/Point';
@@ -77,7 +76,7 @@ function HistoryForm({ submitHandler }) {
               </Tooltip>
             )}
             <PlayerSelect
-              players={playersData}
+              players={playersContext.players}
               selectPlayerHanler={id => selectPlayerHanler('winner', id)}
             />
             <Point
@@ -103,7 +102,7 @@ function HistoryForm({ submitHandler }) {
           <div className="wrapper">
             <span className="rank">{loser ? RANK[loser.level] : 'Loser'}</span>
             <PlayerSelect
-              players={playersData}
+              players={playersContext.players}
               selectPlayerHanler={id => selectPlayerHanler('loser', id)}
             />
             <Point type={type} rankDiff={winner && loser ? loser.level - winner.level : null} />

@@ -12,18 +12,18 @@ function RankTable({ selectToAddBonusHandler }) {
   const [searchedColumn, setSearchedColumn] = useState('');
   const [players, setPlayers] = useState(null);
   const searchInput = useRef(null);
-  const playersData = useContext(PlayersContext);
+  const playersContext = useContext(PlayersContext);
 
   useEffect(() => {
-    if (!playersData.players) return;
-    const playersList = [...playersData.players];
+    if (!playersContext.players) return;
+    const playersList = [...playersContext.players];
     playersList.sort((a, b) => b.point - a.point);
     setPlayers(
       playersList.map((player, id) => {
         return { ...player, order: id + 1 };
       }),
     );
-  }, [playersData.players]);
+  }, [playersContext.players]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();

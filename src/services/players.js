@@ -6,8 +6,8 @@ const newPlayer = (key, name) => {
     lose: 0,
     streak: 0,
     bonus: 0,
-    point: 0,
-    level: 0,
+    point: 50,
+    level: 1,
   };
 };
 
@@ -48,8 +48,10 @@ const updatePlayersAfterMatch = (players, setPlayers, winner, loser, type, chain
   if (rankDiff < 0) rankDiff = 0;
   const newPlayers = [...players];
 
-  newPlayers[winner].streak += 1;
-  if (newPlayers[winner].streak === 3) newPlayers[winner].streak = 0;
+  if (type === 'Bo1') {
+    newPlayers[winner].streak += 1;
+    if (newPlayers[winner].streak === 3) newPlayers[winner].streak = 0;
+  }
   newPlayers[winner].point += calcPlusPoint(type, rankDiff, chain, bonus, streak);
   newPlayers[winner].level = calcLevel(newPlayers[winner].point);
 
