@@ -36,7 +36,7 @@ function App() {
     firebase.auth().onAuthStateChanged(setCurrentUser);
 
     window.addEventListener('unhandledrejection', promiseRejectionEvent => {
-      promiseRejectionEvent.promise.catch(err => {
+      promiseRejectionEvent.promise.catch(() => {
         notification.error({
           placement: 'topRight',
           message: "Something's wrong!",
