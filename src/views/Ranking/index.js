@@ -20,13 +20,13 @@ function Ranking() {
 
   const addBonusHandler = ({ key, name }) => {
     setTargetedPlayer({
-      id: key,
+      key,
       name,
     });
   };
 
   const bonusSubmitHandler = ({ point, comment }) => {
-    eventBonusContext.addBonusForPlayer(targetedPlayer.id, point, comment);
+    eventBonusContext.addBonusForPlayer(targetedPlayer.key, point, comment);
     setTargetedPlayer(null);
   };
 

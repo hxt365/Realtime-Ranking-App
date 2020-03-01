@@ -1,6 +1,7 @@
-const newPlayer = (key, name) => {
+import firebase from 'services/firebase';
+
+const newPlayer = name => {
   return {
-    key,
     name,
     win: 0,
     lose: 0,
@@ -28,39 +29,45 @@ const calcMinusPoint = (type, rankDiff) => {
   return minus;
 };
 
-const addPlayer = (players, setPlayers, name) => {
-  const newPlayers = [...players];
-  newPlayers.push(newPlayer(newPlayers.length, name));
-  setPlayers(newPlayers);
+const getPlayerByKey = (players, key) => {
+  return players.find(player => player.key === key);
 };
 
-const addPointForPlayer = (players, setPlayers, id, point) => {
-  const newPlayers = [...players];
-  newPlayers[id].bonus += point;
-  newPlayers[id].point += point;
-  newPlayers[id].level = calcLevel(newPlayers[id].point);
-  setPlayers(newPlayers);
+const getPlayerIdByKey = (players, key) => {
+  return players.findIndex(player => player.key === key);
 };
 
-const updatePlayersAfterMatch = (players, setPlayers, winner, loser, type, chain, bonus) => {
-  const streak = players[winner].streak === 3;
-  let rankDiff = players[loser].level - players[winner].level;
-  if (rankDiff < 0) rankDiff = 0;
-  const newPlayers = [...players];
-
-  if (type === 'Bo1') {
-    newPlayers[winner].streak += 1;
-    if (newPlayers[winner].streak === 3) newPlayers[winner].streak = 0;
-  }
-  newPlayers[winner].point += calcPlusPoint(type, rankDiff, chain, bonus, streak);
-  newPlayers[winner].level = calcLevel(newPlayers[winner].point);
-
-  newPlayers[loser].streak = 0;
-  newPlayers[loser].point += calcMinusPoint(type, rankDiff);
-  if (newPlayers[loser].point < 0) newPlayers[loser].point = 0;
-  newPlayers[loser].level = calcLevel(newPlayers[loser].point);
-
-  setPlayers(newPlayers);
+const getPlayersFromFirebase = newPlayers => {
+  const res = newPlayers.map(change => ({ ...change.doc.data(), key: change.doc.id }));
+  return res;
 };
 
-export { addPlayer, addPointForPlayer, updatePlayersAfterMatch };
+const createPlayerFromFirebase = async values => {
+  const db = firebase.firestore();
+  const player = await db.collection('players').add(values);
+  return {
+    ...values,
+    key: player.id,
+  };
+};
+
+const updatePlayerByKeyFromFirebase = async (key, values) => {
+  const valuesWithoutKey = { ...values };
+  delete valuesWithoutKey.key;
+  const db = firebase.firestore();
+  db.collection('players')
+    .doc(key)
+    .set(valuesWithoutKey);
+};
+
+export {
+  newPlayer,
+  calcLevel,
+  calcPlusPoint,
+  calcMinusPoint,
+  getPlayerByKey,
+  getPlayerIdByKey,
+  getPlayersFromFirebase,
+  createPlayerFromFirebase,
+  updatePlayerByKeyFromFirebase,
+};

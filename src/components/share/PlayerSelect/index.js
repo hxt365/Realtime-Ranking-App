@@ -14,7 +14,7 @@ function PlayerSelect({ players, selectPlayerHanler }) {
         return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
       }}
     >
-      {players.map(player => (
+      {players?.map(player => (
         <Option key={player.key} value={player.key}>
           {player.name}
         </Option>

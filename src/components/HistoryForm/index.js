@@ -7,6 +7,7 @@ import 'components/HistoryForm/HistoryForm.scss';
 import { PlayersContext } from 'services/context';
 import { RANK } from 'constants/player';
 import Point from 'components/share/Point';
+import { getPlayerByKey } from 'services/players';
 
 const layout = {
   labelCol: { span: 6 },
@@ -36,20 +37,21 @@ function HistoryForm({ submitHandler }) {
     setType('Bo1');
   };
 
-  const selectPlayerHanler = (item, id) => {
+  const selectPlayerHanler = (item, key) => {
     const newFieldsValue = {};
-    newFieldsValue[item] = id;
+    newFieldsValue[item] = key;
     form.setFieldsValue({
       ...newFieldsValue,
     });
-    if (item === 'winner')
+    if (item === 'winnerKey') {
+      const temp = getPlayerByKey(playersContext.players, key);
       setWinner({
-        level: playersContext.players[id].level,
-        streak: playersContext.players[id].streak === 2,
+        level: temp.level,
+        streak: temp.streak === 2,
       });
-    else if (item === 'loser') setLoser({ level: playersContext.players[id].level });
+    } else if (item === 'loserKey')
+      setLoser({ level: getPlayerByKey(playersContext.players, key).level });
   };
-
   return (
     <Form
       name="history-form"
@@ -64,7 +66,7 @@ function HistoryForm({ submitHandler }) {
     >
       <Form.Item {...tailLayout}>
         <Form.Item
-          name="winner"
+          name="winnerKey"
           style={{ display: 'inline-block', width: 'calc(50% - 40px)' }}
           rules={[{ required: true, message: 'Winner is required' }]}
         >
@@ -77,7 +79,7 @@ function HistoryForm({ submitHandler }) {
             )}
             <PlayerSelect
               players={playersContext.players}
-              selectPlayerHanler={id => selectPlayerHanler('winner', id)}
+              selectPlayerHanler={key => selectPlayerHanler('winnerKey', key)}
             />
             <Point
               type={type}
@@ -95,7 +97,7 @@ function HistoryForm({ submitHandler }) {
           <span>won</span>
         </Form.Item>
         <Form.Item
-          name="loser"
+          name="loserKey"
           style={{ display: 'inline-block', width: 'calc(50% - 40px)' }}
           rules={[{ required: true, message: 'Loser is required' }]}
         >
@@ -103,7 +105,7 @@ function HistoryForm({ submitHandler }) {
             <span className="rank">{loser ? RANK[loser.level] : 'Loser'}</span>
             <PlayerSelect
               players={playersContext.players}
-              selectPlayerHanler={id => selectPlayerHanler('loser', id)}
+              selectPlayerHanler={key => selectPlayerHanler('loserKey', key)}
             />
             <Point type={type} rankDiff={winner && loser ? loser.level - winner.level : null} />
           </div>

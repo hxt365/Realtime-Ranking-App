@@ -1,19 +1,35 @@
 import moment from 'moment';
+import firebase from 'firebase';
 
-const newBonus = (key, name, bonus, comment) => {
+const newBonus = (name, bonus, comment) => {
   return {
-    key,
-    datetime: moment(),
+    datetime: moment().format('YYYY-MM-DD H:m:s'),
     name,
     bonus,
-    comment,
+    comment: comment ?? '',
   };
 };
 
-const createEventBonus = (players, eventBonus, setEventBonus, id, bonus, comment) => {
-  const newEventBonus = [...eventBonus];
-  newEventBonus.push(newBonus(newEventBonus.length, players[id].name, bonus, comment));
-  setEventBonus(newEventBonus);
+const getEventBonusFromFirebase = newEventBonus => {
+  const res = newEventBonus.map(change => {
+    const serializedData = change.doc.data();
+    return {
+      ...serializedData,
+      key: change.doc.id,
+      datetime: moment(serializedData.datetime, 'YYYY-MM-DD H:m:s'),
+    };
+  });
+  return res;
 };
 
-export { createEventBonus };
+const createEventBonusFormFirebase = async values => {
+  const db = firebase.firestore();
+  const eventBonus = await db.collection('event-bonus').add(values);
+  return {
+    ...values,
+    datetime: moment(values.datetime, 'YYYY-MM-DD H:m:s'),
+    key: eventBonus.id,
+  };
+};
+
+export { newBonus, getEventBonusFromFirebase, createEventBonusFormFirebase };
