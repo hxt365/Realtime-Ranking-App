@@ -38,8 +38,13 @@ const getPlayerIdByKey = (players, key) => {
 };
 
 const getPlayersFromFirebase = newPlayers => {
-  const res = newPlayers.map(change => ({ ...change.doc.data(), key: change.doc.id }));
-  return res;
+  const added = newPlayers
+    .filter(change => change.type === 'added')
+    .map(change => ({ ...change.doc.data(), key: change.doc.id }));
+  const modified = newPlayers
+    .filter(change => change.type === 'modified')
+    .map(change => ({ ...change.doc.data(), key: change.doc.id }));
+  return { added, modified };
 };
 
 const createPlayerFromFirebase = async values => {

@@ -35,8 +35,15 @@ function App() {
       .firestore()
       .collection('players')
       .onSnapshot(snapshot => {
-        const newPlayers = getPlayersFromFirebase(snapshot.docChanges());
-        setPlayers(s => [...s, ...newPlayers]);
+        const playersSnapshot = getPlayersFromFirebase(snapshot.docChanges());
+        setPlayers(s => {
+          const newPlayers = [...s];
+          playersSnapshot.modified.forEach(player => {
+            const id = getPlayerIdByKey(newPlayers, player.key);
+            newPlayers[id] = player;
+          });
+          return [...newPlayers, ...playersSnapshot.added];
+        });
       });
     firebase
       .firestore()
@@ -71,6 +78,7 @@ function App() {
     const newPlayers = [...players];
     newPlayers[id].bonus += point;
     newPlayers[id].point += point;
+    if (newPlayers[id].point < 0) newPlayers[id].point = 0;
     newPlayers[id].level = calcLevel(newPlayers[id].point);
     setPlayers(newPlayers);
     updatePlayerByKeyFromFirebase(key, newPlayers[id]);
@@ -110,7 +118,7 @@ function App() {
 
   const createHistory = async (winnerId, loserId, type, chain, bonus, comment) => {
     const newHistory = [...history];
-    
+
     openNotification('pending', 'Adding history...');
     const match = await createHistoryFromFirebase(
       newMatch(players[winnerId], players[loserId], type, chain, bonus, comment),

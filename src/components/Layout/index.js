@@ -10,7 +10,9 @@ function AppLayout({ children }) {
     <div className="layout">
       <Header />
       <Content className="layout__content">{children}</Content>
-      <Footer className="layout__footer">Copyright © 2020 Keyforge Hanoi</Footer>
+      <Footer className="layout__footer">
+        Copyright © 2020 Keyforge Hanoi. Developed by HXT365 (fb.com/hxt365)
+      </Footer>
       <div className="layout__background layout__background_left" />
       <div className="layout__background layout__background_right" />
     </div>
