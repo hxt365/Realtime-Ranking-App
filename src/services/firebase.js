@@ -1,6 +1,7 @@
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
-const firebaseConfig = {
+const app = firebase.initializeApp({
   apiKey: 'AIzaSyCA8TKBNV8fcvy4-NPJ6rJqIxPg_KDwhU0',
   authDomain: 'keyforgehanoi.firebaseapp.com',
   databaseURL: 'https://keyforgehanoi.firebaseio.com',
@@ -8,8 +9,6 @@ const firebaseConfig = {
   storageBucket: 'keyforgehanoi.appspot.com',
   messagingSenderId: '71674516423',
   appId: '1:71674516423:web:34314d88df98520e6cffe2',
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+});
 
-export default firebase;
+export default app;

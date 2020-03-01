@@ -5,7 +5,7 @@ import Ranking from 'views/Ranking';
 import MatchHistory from 'views/MatchHistory';
 import EventBonus from 'views/EventBonus';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import { PlayersContext, HistoryContext, EventBonusContext } from 'services/context';
+import { PlayersContext, HistoryContext, EventBonusContext, AuthContext } from 'services/context';
 import {
   newPlayer,
   calcLevel,
@@ -24,11 +24,27 @@ import {
 import { newMatch, getHistoryFromFirebase, createHistoryFromFirebase } from 'services/history';
 import { notification } from 'antd';
 import firebase from 'services/firebase';
+import Login from 'views/Login';
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [players, setPlayers] = useState([]);
   const [history, setHistory] = useState([]);
   const [eventBonus, setEventBonus] = useState([]);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setCurrentUser);
+
+    window.addEventListener('unhandledrejection', promiseRejectionEvent => {
+      promiseRejectionEvent.promise.catch(err => {
+        notification.error({
+          placement: 'topRight',
+          message: "Something's wrong!",
+          description: 'You might not log in as administrator',
+        });
+      });
+    });
+  }, []);
 
   useEffect(() => {
     firebase
@@ -154,26 +170,31 @@ function App() {
 
   return (
     <div className="App">
-      <PlayersContext.Provider value={{ players, addNewPlayer }}>
-        <HistoryContext.Provider value={{ history, addMatchHistory }}>
-          <EventBonusContext.Provider value={{ eventBonus, addBonusForPlayer }}>
-            <Layout>
-              <Switch>
-                <Route path="/ranking" exact>
-                  <Ranking />
-                </Route>
-                <Route path="/history" exact>
-                  <MatchHistory />
-                </Route>
-                <Route path="/bonus" exact>
-                  <EventBonus />
-                </Route>
-                <Redirect to="/ranking" />
-              </Switch>
-            </Layout>
-          </EventBonusContext.Provider>
-        </HistoryContext.Provider>
-      </PlayersContext.Provider>
+      <AuthContext.Provider value={{ currentUser, setCurrentUser }}>
+        <PlayersContext.Provider value={{ players, addNewPlayer }}>
+          <HistoryContext.Provider value={{ history, addMatchHistory }}>
+            <EventBonusContext.Provider value={{ eventBonus, addBonusForPlayer }}>
+              <Layout>
+                <Switch>
+                  <Route path="/ranking" exact>
+                    <Ranking />
+                  </Route>
+                  <Route path="/history" exact>
+                    <MatchHistory />
+                  </Route>
+                  <Route path="/bonus" exact>
+                    <EventBonus />
+                  </Route>
+                  <Route path="/login" exact>
+                    <Login />
+                  </Route>
+                  <Redirect to="/ranking" />
+                </Switch>
+              </Layout>
+            </EventBonusContext.Provider>
+          </HistoryContext.Provider>
+        </PlayersContext.Provider>
+      </AuthContext.Provider>
     </div>
   );
 }

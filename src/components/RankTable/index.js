@@ -3,7 +3,7 @@ import Highlighter from 'react-highlight-words';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { PlayersContext } from 'services/context';
+import { PlayersContext, AuthContext } from 'services/context';
 import 'components/RankTable/RankTable.scss';
 import { RANK } from 'constants/player';
 
@@ -12,6 +12,7 @@ function RankTable({ selectToAddBonusHandler }) {
   const [searchedColumn, setSearchedColumn] = useState('');
   const [players, setPlayers] = useState(null);
   const searchInput = useRef(null);
+  const { currentUser } = useContext(AuthContext);
   const playersContext = useContext(PlayersContext);
 
   useEffect(() => {
@@ -152,6 +153,7 @@ function RankTable({ selectToAddBonusHandler }) {
       width: '13%',
       render: record => (
         <Button
+          disabled={!currentUser}
           type="dashed"
           shape="round"
           icon={<PlusOutlined />}
