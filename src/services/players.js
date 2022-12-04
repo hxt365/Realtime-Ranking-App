@@ -18,7 +18,7 @@ const calcLevel = point => {
 };
 
 const calcPlusPoint = (type, rankDiff, chain, bonus, streak) => {
-  let plus = 5 + rankDiff + chain + bonus + 5 * streak;
+  let plus = 5 + rankDiff + chain / 2 + bonus + 5 * streak;
   if (type === 'Bo3') plus = 15 + rankDiff + chain + bonus;
   return plus;
 };

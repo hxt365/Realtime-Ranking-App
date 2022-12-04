@@ -126,7 +126,7 @@ function HistoryForm({ submitHandler }) {
         name="chain"
         rules={[{ required: true, message: 'Chain point is required' }]}
       >
-        <InputNumber min={0} step={0.5} onChange={value => setChain(value)} />
+        <InputNumber min={0} onChange={value => setChain(value)} />
       </Form.Item>
       <Form.Item
         label="Bonus"

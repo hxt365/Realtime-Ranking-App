@@ -37,7 +37,7 @@ function Point({ type, win, streak, rankDiff, chain, bonus }) {
     chainPoint = (
       <span>
         &nbsp;+&nbsp;
-        {chain}
+        {chain / 2}
       </span>
     );
 
